@@ -218,7 +218,63 @@ The API uses standard HTTP status codes:
 - 409: Conflict (e.g., duplicate entry)
 - 500: Internal Server Error
 
-All error responses include an `error` field with a descriptive message.
+### Error Response Format
+
+All error responses follow a consistent JSON structure. Clients should rely on these fields to render messages and handle errors programmatically.
+
+```
+{
+  "error": "Short machine-readable error name",
+  "message": "Human-readable description of the problem",
+  "details": { /* optional object with field-specific issues */ },
+  "code": "optional_app_specific_code",
+  "timestamp": "ISO-8601 timestamp"
+}
+```
+
+- `error`: Concise identifier (e.g., `Validation Error`, `Invalid Token`, `Duplicate Entry`).
+- `message`: Clear explanation suitable for display to users.
+- `details` (optional): Additional context. For validation errors, include per-field messages (e.g., `{ "email": "Invalid format" }`).
+- `code` (optional): Application-specific code if needed for clients.
+- `timestamp`: When the error occurred (server time in ISO format).
+
+Examples:
+
+- Validation error (400):
+
+```
+{
+  "error": "Validation Error",
+  "message": "Request body failed validation",
+  "details": {
+    "email": "Invalid email format",
+    "password": "Password must be at least 6 characters"
+  },
+  "timestamp": "2025-12-02T10:15:30.000Z"
+}
+```
+
+- Authentication error (401):
+
+```
+{
+  "error": "Invalid Token",
+  "message": "Authentication token is invalid",
+  "timestamp": "2025-12-02T10:15:30.000Z"
+}
+```
+
+- Not found (404):
+
+```
+{
+  "error": "Not Found",
+  "message": "User not found",
+  "timestamp": "2025-12-02T10:15:30.000Z"
+}
+```
+
+Success responses should not include the `error` field.
 
 ## Testing
 
