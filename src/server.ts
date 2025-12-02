@@ -3,7 +3,6 @@ import cors from "cors";
 import helmet from "helmet";
 import dotenv from "dotenv";
 import { connectDatabase } from "./config/database";
-import { errorHandler } from "./middleware/errorHandler";
 import { requestLogger } from "./middleware/logger";
 import { rateLimiter } from "./middleware/rateLimiter";
 
@@ -37,9 +36,6 @@ app.get("/health", (req, res) => {
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);
-
-// Error handling middleware (must be last)
-app.use(errorHandler);
 
 // Start server
 const startServer = async () => {
